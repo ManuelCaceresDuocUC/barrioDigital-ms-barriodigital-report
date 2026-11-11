@@ -1,0 +1,32 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Ejecutar tests
+        # Se excluyen los *ApplicationTests (levantan el contexto completo y necesitan Oracle/RabbitMQ reales).
+        run: |
+          chmod +x mvnw
+          ./mvnw -B -ntp test -Dtest='!*ApplicationTests' -Dsurefire.failIfNoSpecifiedTests=false
+
+# report y audit pertenecen al perfil `kafka` de apps/compose.yml y aún no están desplegados:
+# por ahora solo se ejecutan los tests. Al incorporarlos, agregar el job `deploy` como en los demás repos.
