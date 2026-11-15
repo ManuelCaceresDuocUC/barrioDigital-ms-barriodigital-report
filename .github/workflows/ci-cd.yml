@@ -30,9 +30,8 @@ jobs:
 
   deploy:
     name: Desplegar en ec2-apps
-    # DESACTIVADO hasta cargar los secrets EC2_* en este repositorio. Al hacerlo, cambiar `false &&` por nada.
     # Solo al fusionar en main (no en pull requests) y si los tests pasaron.
-    if: false && github.event_name == 'push'
+    if: github.event_name == 'push'
     needs: test
     uses: ManuelCaceresDuocUC/barriodigital-infra/.github/workflows/deploy-service.yml@main
     with:
