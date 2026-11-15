@@ -16,9 +16,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.OracleDialect
 
-  spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: ms-report-consumer-group-v2
       auto-offset-reset: earliest
