@@ -1,7 +1,9 @@
+# Configuración del microservicio de reportería (ms-report).
 server:
-  port: 8085
+  port: 8085                       # Puerto HTTP (en el compose se ajusta para que calce con las URLs del BFF).
 
 spring:
+  # Conexión a Oracle (en la nube se sobrescribe con variables de entorno).
   datasource:
     url: jdbc:oracle:thin:@localhost:1521/FREEPDB1
     username: barriodigital
@@ -11,15 +13,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update # Útil para desarrollo; usar 'validate' en prod
-    show-sql: false
+    show-sql: false                # No imprime cada SQL en el log.
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.OracleDialect
+        dialect: org.hibernate.dialect.OracleDialect   # SQL específico de Oracle.
 
   kafka:
+    # Dirección de los brokers de Kafka; en ec2-apps llega por la variable KAFKA_BOOTSTRAP_SERVERS.
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
+      # El "-v2" se agregó para empezar a leer desde cero con un grupo nuevo (los offsets se guardan por grupo).
       group-id: ms-report-consumer-group-v2
-      auto-offset-reset: earliest
+      auto-offset-reset: earliest  # Grupo nuevo: parte desde el primer mensaje disponible.
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
